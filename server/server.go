@@ -11,14 +11,12 @@ import (
 	"strconv"
 )
 
-
-
-func Start(){
+func Start() {
 	var ipInterface string = "0.0.0.0"
 	var port int = 1411
 	var address string = ipInterface + ":" + strconv.Itoa(port)
 	server, err := net.Listen("tcp", address)
-	
+
 	if err != nil {
 		panic(err)
 	}
@@ -38,12 +36,10 @@ func Start(){
 			panic(err)
 		}
 		broadcast.AddConnection(conn)
-		
+
 		go handleConnection(conn)
 	}
 }
-
-
 
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
@@ -69,4 +65,3 @@ func handleConnection(conn net.Conn) {
 		distpacher.Dispatch(conn, bytes.NewBuffer(packetBuffer))
 	}
 }
-

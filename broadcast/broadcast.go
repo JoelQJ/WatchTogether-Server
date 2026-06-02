@@ -49,3 +49,7 @@ func SendBroadcast(clientExcluded net.Conn, buffer *bytes.Buffer) {
 		Send(client, buffer)
 	}
 }
+
+func SenAll(buffer *bytes.Buffer){
+	SendBroadcast(nil, buffer)
+}

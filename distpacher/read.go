@@ -6,30 +6,22 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
-	"time"
 )
 
 type Packet func(client net.Conn, data *bytes.Buffer)
-var packets map[int]Packet = make(map[int]Packet)
 
-func register(id int, packet Packet) {
-	packets[id] = packet
+var packets map[int32]Packet = make(map[int32]Packet)
+
+func register(id PacketsIDS, packet Packet) {
+	packets[int32(id)] = packet
 }
 
-func RegisterPackets(){
-	register(0, handlePing)
-	register(1, handlePlayPause)
-	register(3, handleSetTime)
-
- go func() {
-        time.Sleep(10 * time.Second)
-        broadcast.SendBroadcast(nil, WriteSetVideoPacket("otaku.mkv"))
-
-        go func(){
-        	time.Sleep(10 * time.Second)
-        broadcast.SendBroadcast(nil, WriteSetVideoPacket("otaku.mkv"))
-        }()
-    }()
+func RegisterPackets() {
+	register(Ping, handlePing)
+	register(PlayPause, handlePlayPause)
+	register(SetTime, handleSetTime)
+	register(VideoFinish, handleVideoFinish)
+	register(VideoLoaded, handleVideoLoaded)
 }
 
 func Dispatch(client net.Conn, buff *bytes.Buffer) {
@@ -39,28 +31,36 @@ func Dispatch(client net.Conn, buff *bytes.Buffer) {
 		fmt.Println("Error leyendo id del packet:", err)
 		return
 	}
-	funcion, ok := packets[int(id)]
+	funcion, ok := packets[id]
 	if ok {
 		funcion(client, buff)
 	}
 }
 
-func handlePing(client net.Conn, buff *bytes.Buffer){
-	buffer := CreateBufferForWritePacket(0)
+// Packets!
+func handlePing(client net.Conn, buff *bytes.Buffer) {
+	var buffer = CreateBufferForWritePacket(Ping)
 	buffer.Write(buff.Bytes())
 	broadcast.Send(client, buffer)
 	fmt.Println("Ping! Enviando Pong!")
 }
 
-func handlePlayPause(client net.Conn, buff *bytes.Buffer){
-	buffer := CreateBufferForWritePacket(1)
+func handlePlayPause(client net.Conn, buff *bytes.Buffer) {
+	var buffer = CreateBufferForWritePacket(PlayPause)
 	buffer.Write(buff.Bytes())
-	broadcast.SendBroadcast(nil, buffer)
+	broadcast.SenAll(buffer)
 }
 
-func handleSetTime(client net.Conn, buff *bytes.Buffer){
-	buffer := CreateBufferForWritePacket(3)
+func handleSetTime(client net.Conn, buff *bytes.Buffer) {
+	var buffer = CreateBufferForWritePacket(SetTime)
 	buffer.Write(buff.Bytes())
-	broadcast.SendBroadcast(nil, buffer)
+	broadcast.SenAll(buffer)
 }
 
+func handleVideoFinish(client net.Conn, buff *bytes.Buffer) {
+	fmt.Println("Video terminado")
+}
+
+func handleVideoLoaded(client net.Conn, buff *bytes.Buffer) {
+	fmt.Println("Video Cargado")
+}
