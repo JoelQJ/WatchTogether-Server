@@ -31,7 +31,6 @@ func Start() {
 
 	for {
 		conn, err := server.Accept()
-		fmt.Println("Cliente Conectado")
 		if err != nil {
 			panic(err)
 		}

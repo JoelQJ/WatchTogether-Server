@@ -1,6 +1,7 @@
 package console
 
 import (
+	"WatchTogether-Server/list"
 	"WatchTogether-Server/player"
 	"fmt"
 	"strconv"
@@ -23,6 +24,7 @@ func commands(shell *ishell.Shell) {
 	shell.AddCmd(setVideoCommand())
 	shell.AddCmd(playCommand())
 	shell.AddCmd(setTimeCommand())
+	shell.AddCmd(setListCommand())
 }
 
 func setVideoCommand() *ishell.Cmd {
@@ -77,6 +79,27 @@ func setTimeCommand() *ishell.Cmd {
 			timeString := c.Args[0]
 			time, _ := strconv.ParseFloat(timeString, 64)
 			player.SetTime(time)
+		},
+	}
+}
+
+func setListCommand() *ishell.Cmd {
+	return &ishell.Cmd{
+		Name: "SetList",
+		Help: "Setea una lista de reproduccion",
+		Func: func(c *ishell.Context) {
+			if len(c.Args) < 1 {
+				fmt.Println("Uso Correcto SetList <fileName> <secRetard> <- Opcional")
+				return
+			}
+		
+			if len(c.Args) > 1 {
+			    var retard, _ = strconv.Atoi(c.Args[1])
+			    list.SetRetardSeconds(retard)
+
+			}
+			list.SetList(c.Args[0])
+
 		},
 	}
 }

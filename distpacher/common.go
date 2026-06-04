@@ -2,7 +2,6 @@ package distpacher
 
 import (
 	"encoding/binary"
-
 )
 
 var byteOrder binary.ByteOrder = binary.BigEndian
@@ -10,6 +9,7 @@ var byteOrder binary.ByteOrder = binary.BigEndian
 type PacketsIDS int32;
 
 var(
+	HandShake	PacketsIDS = -1
 	Ping 		PacketsIDS = 0
 	PlayPause 	PacketsIDS = 1
 	SetVideo	PacketsIDS = 2
@@ -17,4 +17,6 @@ var(
 	VideoFinish PacketsIDS = 4
 	VideoLoaded PacketsIDS = 5
 )
+
+
 
