@@ -16,6 +16,7 @@ var(
 	SetTime 	PacketsIDS = 3
 	VideoFinish PacketsIDS = 4
 	VideoLoaded PacketsIDS = 5
+	VideoCancel PacketsIDS = 6
 )
 
 

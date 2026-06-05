@@ -25,6 +25,8 @@ func commands(shell *ishell.Shell) {
 	shell.AddCmd(playCommand())
 	shell.AddCmd(setTimeCommand())
 	shell.AddCmd(setListCommand())
+	shell.AddCmd(cancelVideo())
+	shell.AddCmd(cancelList())
 }
 
 func setVideoCommand() *ishell.Cmd {
@@ -100,6 +102,30 @@ func setListCommand() *ishell.Cmd {
 			}
 			list.SetList(c.Args[0])
 
+		},
+	}
+}
+
+func cancelVideo() *ishell.Cmd {
+	return &ishell.Cmd{
+		Name: "CancelVideo",
+		Help: "Manda a todos los clientes el CancelVideoPacket",
+		Func: func(c *ishell.Context) {
+			fmt.Println("Enviando cancelar video...")
+			player.RemoveVideo()
+		},
+	}
+}
+
+
+
+func cancelList() *ishell.Cmd {
+	return &ishell.Cmd{
+		Name: "CancelList",
+		Help: "Cancela la lista y para el video actual",
+		Func: func(c *ishell.Context) {
+			fmt.Println("Cancelando Lista...")
+			list.ClearList()
 		},
 	}
 }

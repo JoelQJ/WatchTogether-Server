@@ -8,7 +8,6 @@ import (
 
 func SetVideoWithRetard(url string, secondsWait int) {
 	broadcast.SenAll(distpacher.WriteSetVideoPacket(url))
-	Play(false)
 	//Ponemos el video y el play true es mas tarde para esperar a que cargue
 	time.AfterFunc(time.Duration(secondsWait)*time.Second, func() {
 		SetTime(0)
@@ -17,7 +16,7 @@ func SetVideoWithRetard(url string, secondsWait int) {
 }
 
 func RemoveVideo() {
-	//Todo WE NEED TO DO THE PACKET
+	broadcast.SenAll(distpacher.WriteCancelVideoPacket())
 }
 
 func Play(play bool) {

@@ -46,3 +46,8 @@ func WriteSetTimePacket(time float64)  *bytes.Buffer{
 
 	return buffer
 }
+
+func WriteCancelVideoPacket()  *bytes.Buffer{
+	var buffer = CreateBufferForWritePacket(VideoCancel)
+	return buffer
+}

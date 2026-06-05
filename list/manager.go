@@ -37,6 +37,7 @@ func VideoComplete(client net.Conn) {
 }
 
 func SetList(fileName string) {
+	ClearList()
 	computeList(fileName)
 	NextVideo()
 }
@@ -79,8 +80,8 @@ func parseVideoAndAdd(video string) {
 	if strings.HasPrefix(video, "+") {
 		return
 	}
-	if strings.HasPrefix(video, "-") {
-		computeList(strings.TrimPrefix(video, "-"))
+	if after, ok := strings.CutPrefix(video, "-"); ok  {
+		computeList(after)
 		return
 	}
 	videos = append(videos, video)
@@ -101,5 +102,8 @@ func ClearList() {
 }
 
 func initializeList() {
+	mu.Lock()
 	videos = make([]string, 0)
+	clients = make([]net.Conn, 0)
+	mu.Unlock()
 }

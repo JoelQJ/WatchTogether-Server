@@ -9,7 +9,6 @@ import (
 	"net"
 )
 
-
 type Packet func(client net.Conn, data *bytes.Buffer)
 
 var packets map[int32]Packet = make(map[int32]Packet)
@@ -28,7 +27,7 @@ func RegisterPackets() {
 }
 
 func Dispatch(client net.Conn, buff *bytes.Buffer) {
-	var id PacketsIDS	
+	var id PacketsIDS
 	err := binary.Read(buff, byteOrder, &id)
 	if err != nil {
 		fmt.Println("Error leyendo id del packet:", err)
@@ -39,7 +38,7 @@ func Dispatch(client net.Conn, buff *bytes.Buffer) {
 		broadcast.HandleDisconnect(client)
 		return
 	}
-	
+
 	funcion, ok := packets[int32(id)]
 	if ok {
 		funcion(client, buff)
@@ -73,9 +72,10 @@ func handleVideoFinish(client net.Conn, buff *bytes.Buffer) {
 
 func handleVideoLoaded(client net.Conn, buff *bytes.Buffer) {
 	fmt.Println("Video Cargado")
+	broadcast.Send(client, WritePlayPusePacket(false))
 }
 
-func handleHandShake(client net.Conn, buff *bytes.Buffer){
+func handleHandShake(client net.Conn, buff *bytes.Buffer) {
 	fmt.Println("Cliente Conectado")
 	broadcast.ValidateConnection(client)
 
