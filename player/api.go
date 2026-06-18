@@ -16,7 +16,11 @@ func SetVideoWithRetard(url string, secondsWait int) {
 }
 
 func RemoveVideo() {
-	broadcast.SenAll(distpacher.WriteCancelVideoPacket())
+	//Fix: if we dont Play the video and wait 2 second, dont work if the video is Paused.
+	Play(true)
+	time.AfterFunc(time.Duration(2)*time.Second, func() {
+		broadcast.SenAll(distpacher.WriteCancelVideoPacket())
+	})
 }
 
 func Play(play bool) {
