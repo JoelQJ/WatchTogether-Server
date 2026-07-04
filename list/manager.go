@@ -23,6 +23,19 @@ var mu sync.Mutex
 
 func init() {
 	events.SubscribeVideoFinish(VideoComplete)
+	events.SubscribeClientDisconnect(handleClientDisconnect)
+}
+//If we dont do this, if client is in video when disconnect the next video never set
+func handleClientDisconnect(conn net.Conn){
+	mu.Lock()
+	clients = slices.DeleteFunc(clients, func(connIt net.Conn) bool {
+		var eliminar bool = connIt == conn
+		if eliminar{
+			fmt.Println("Cliente eliminado de la lista!")
+		}
+		return eliminar
+	})
+	mu.Unlock()
 }
 
 func VideoComplete(client net.Conn) {

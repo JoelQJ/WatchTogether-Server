@@ -12,3 +12,13 @@ func FireVideoFinish(client net.Conn) {
 	}
 }
 
+var onClientDisconnect []func(client net.Conn)
+func SubscribeClientDisconnect(f func(net.Conn)) {
+	onClientDisconnect = append(onClientDisconnect, f)
+}
+func FireClientDisconnect(client net.Conn) {
+	for _, f := range onClientDisconnect {
+		f(client)
+	}
+}
+

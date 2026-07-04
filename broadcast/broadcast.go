@@ -1,6 +1,7 @@
 package broadcast
 
 import (
+	"WatchTogether-Server/events"
 	"bytes"
 	"encoding/binary"
 	"fmt"
@@ -41,6 +42,7 @@ func HandleDisconnect(conn net.Conn) {
 		return connIt == conn
 	})
 	mu.Unlock()
+	events.FireClientDisconnect(conn)
 	conn.Close()
 }
 
