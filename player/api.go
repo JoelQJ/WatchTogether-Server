@@ -6,10 +6,10 @@ import (
 	"time"
 )
 
-func SetVideoWithRetard(url string, secondsWait int) {
+func SetVideoWithRetard(url string, secondsWait int) *time.Timer {
 	broadcast.SenAll(distpacher.WriteSetVideoPacket(url))
 	//Ponemos el video y el play true es mas tarde para esperar a que cargue
-	time.AfterFunc(time.Duration(secondsWait)*time.Second, func() {
+	return time.AfterFunc(time.Duration(secondsWait)*time.Second, func() {
 		SetTime(0)
 		Play(true)
 	})

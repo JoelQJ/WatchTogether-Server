@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 )
 
 var videos []string
@@ -19,6 +20,7 @@ var retardSeconds int = 40
 
 var clients []net.Conn
 
+var timer *time.Timer
 var mu sync.Mutex
 
 func init() {
@@ -63,7 +65,10 @@ func NextVideo() {
 	}
 	videoPlaying = video
 	clients = broadcast.GetConnections()
-	player.SetVideoWithRetard(videoPlaying, retardSeconds)
+	if timer != nil{
+		timer.Stop()
+	}
+	timer = player.SetVideoWithRetard(videoPlaying, retardSeconds)
 }
 
 func SetRetardSeconds(retard int) {
